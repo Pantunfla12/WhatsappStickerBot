@@ -3,8 +3,9 @@ const fs = require("fs");
 const mime = require("mime-types");
 const { Client, MessageMedia } = require("whatsapp-web.js");
 const client = new Client();
-const ania = MessageMedia.fromFilePath('./media/ania.mp3')
-const risa_clash = MessageMedia.fromFilePath('./media/risa_clash.mp3')
+const ania = MessageMedia.fromFilePath("./media/ania.mp3");
+const risa_clash = MessageMedia.fromFilePath("./media/risa_clash.mp3");
+const edson = MessageMedia.fromFilePath("./media/edson.mp3");
 
 client.on("qr", (qr) => {
   qrcode.generate(qr, { small: true });
@@ -29,6 +30,14 @@ client.on("message", (message) => {
 
   if (message.body === "jijija") {
     message.reply(risa_clash);
+  }
+
+  if (message.body === "morbius?") {
+    message.reply(edson);
+  }
+
+  if (message.body === "chica que dice") {
+    message.reply("Saoko papi Saoko🥵🤙");
   }
 
   // stickers section
