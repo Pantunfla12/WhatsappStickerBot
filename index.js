@@ -2,10 +2,13 @@ const qrcode = require("qrcode-terminal");
 const fs = require("fs");
 const mime = require("mime-types");
 const { Client, MessageMedia } = require("whatsapp-web.js");
+
 const client = new Client();
 const ania = MessageMedia.fromFilePath("./media/ania.mp3");
 const risa_clash = MessageMedia.fromFilePath("./media/risa_clash.mp3");
 const edson = MessageMedia.fromFilePath("./media/edson.mp3");
+
+
 
 client.on("qr", (qr) => {
   qrcode.generate(qr, { small: true });
@@ -19,9 +22,18 @@ client.on("message", (message) => {
   console.log(message.body);
 });
 
-client.on("message", (message) => {
+client.on("message", async message => {
+  
   if (message.body === "ping") {
+    const contact = await message.getContact();
+    console.log(`Hi @${contact.number}!`)
+
+    if(contact.number === "5213123170749"){
+    console.log('este es un gilipollas')
+  }else {
     message.reply("pong");
+  }
+
   }
 
   if (message.body === "aña") {
