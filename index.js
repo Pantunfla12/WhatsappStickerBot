@@ -3,11 +3,17 @@ const fs = require("fs");
 const mime = require("mime-types");
 const { Client, MessageMedia } = require("whatsapp-web.js");
 
-const client = new Client();
+
 const ania = MessageMedia.fromFilePath("./media/ania.mp3");
 const risa_clash = MessageMedia.fromFilePath("./media/risa_clash.mp3");
 const edson = MessageMedia.fromFilePath("./media/edson.mp3");
 
+
+
+const client = new Client({
+  puppeteer: { args: ["--no-sandbox"] },
+  ffmpeg:'./ffmpeg',
+}); 
 
 
 client.on("qr", (qr) => {
@@ -24,31 +30,31 @@ client.on("message", (message) => {
 
 client.on("message", async message => {
   
-  if (message.body === "ping") {
+  if (message.body === "-ping") {
     const contact = await message.getContact();
-    console.log(`Hi @${contact.number}!`)
+    // console.log(`Hi @${contact.number}!`)
 
-    if(contact.number === "5213123170749"){
-    console.log('este es un gilipollas')
-  }else {
+    // if(contact.number === "5213123170749"){
+    // console.log('este es un gilipollas')
+  // }else {
     message.reply("pong");
   }
 
-  }
+  
 
-  if (message.body === "aña") {
+  if (message.body === "-aña") {
     message.reply(ania);
   }
 
-  if (message.body === "jijija") {
+  if (message.body === "-jijija") {
     message.reply(risa_clash);
   }
 
-  if (message.body === "morbius?") {
+  if (message.body === "-morbius?") {
     message.reply(edson);
   }
 
-  if (message.body === "chica que dice") {
+  if (message.body === "-chica que dice") {
     message.reply("Saoko papi Saoko🥵🤙");
   }
 
@@ -70,8 +76,36 @@ client.on("message", async message => {
 
           const fullFilename = mediaPath + filename + "." + extension;
 
+          console.log("se envio archivo tipo:", extension)
           if (extension === "mp4") {
-            console.log("fakiu");
+
+            console.log("");
+            //gif
+            try {
+              fs.writeFileSync(fullFilename, media.data, {
+                encoding: "base64",
+              });
+              console.log("File downloaded successfully!", fullFilename);
+              console.log(fullFilename);
+              MessageMedia.fromFilePath((filePath = fullFilename));
+              client.sendMessage(
+                message.from,
+                new MessageMedia(media.mimetype, media.data, filename),
+                {
+                  sendMediaAsSticker: true,
+                  stickerAuthor: "Pantunfla12",
+                  stickerName: "Sticker",
+                }
+              );
+              fs.unlinkSync(fullFilename);
+              console.log(`File Deleted successfully!`);
+            } catch (err) {
+              console.log("Failed to save the file:", err);
+              console.log(`File Deleted successfully!`);
+            }
+
+            //end gif
+
           } else {
             // Save to file
             try {
